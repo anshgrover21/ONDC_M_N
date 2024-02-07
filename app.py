@@ -78,7 +78,7 @@ async def create_graph(bucket_name : str , blob_name : str ):
             chunk.fillna(-1, inplace=True)
             # chunk.astype(int)
             for _, row in chunk.iterrows():
-                merchant_id = row[0]
+                merchant_id = row.iloc[0]
                 if merchant_id not in graph.merchant_graph:
                     graph.merchant_graph[merchant_id] = set()
                 for i in row.iloc[1:]:
