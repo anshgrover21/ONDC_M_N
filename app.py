@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Depends 
+from fastapi import FastAPI, File, UploadFile, Depends , HTTPException
 import pandas as pd 
 import numpy as np
 from mn_ondc import Graph
@@ -33,19 +33,23 @@ def get_graph() :
 @app.get("/")
 def root(graph : Graph = Depends(get_graph)):
     for i in graph.merchant_graph : 
-        if (len(graph.merchant_graph[i])) : print ( i , graph.merchant_graph[i] )
+        # if (len(graph.merchant_graph[i])) : 
+        print ( i , graph.merchant_graph[i] )
     for j in graph.pincode_graph:
-        if  (len(graph.pincode_graph[j])) : print ( j , graph.pincode_graph[j] ) 
+        # if  (len(graph.pincode_graph[j])) : 
+        print ( j , graph.pincode_graph[j] ) 
 
 @app.get("/search/")
-async def get_pincodes(merchant_id : int, pincode : int , graph : Graph = Depends(get_graph) ):
-    try : 
-        if ( merchant_id is not None ):
-            return {"pincodes" : graph.find_pincode(merchant_id) }
-        if (pincode is not None ):
-            return {"merchants" : graph.find_merchants(pincode)}
-    except Exception as e : 
-        raise CustomException( e , sys ) 
+async def get_pincodes(merchant_id: int = None, pincode: int = None, graph: Graph = Depends(get_graph)):
+    try:
+        if merchant_id is not None:
+            return {"pincodes": list(graph.find_pincode(merchant_id))}
+        elif pincode is not None:
+            return {"merchants": list(graph.find_merchants(pincode))}
+        else:
+            raise HTTPException(status_code=400, detail="Missing parameter: merchant_id or pincode")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
@@ -70,18 +74,27 @@ async def create_graph(bucket_name : str , blob_name : str ):
         # print ( blob_file  )
 
 
-        for chunk in pd.read_csv(blob_file, iterator=True,header=None , chunksize=100, names=[f"col_{i}" for i in range(30000)]):
-
+        for chunk in pd.read_csv(blob_file, iterator=True,header=None , chunksize=100, names=[f"col_{i}" for i in range(30000)] , na_values=["NaN"]  ):
+            chunk.fillna(-1, inplace=True)
+            # chunk.astype(int)
             for _, row in chunk.iterrows():
-                for i in row[1:]:
-                    if ( pd.isna(i) ) :
+                merchant_id = row[0]
+                if merchant_id not in graph.merchant_graph:
+                    graph.merchant_graph[merchant_id] = set()
+                for i in row.iloc[1:]:
+                    if ( i == -1  ) :
                         break 
                     else :
-                        graph.merchant_graph[int(row[0])].add(int (i) ) 
-                        graph.pincode_graph[int(i)].add( int(row[0]) )
-                    
+                        graph.merchant_graph[merchant_id].add(i) 
+                        if i not in graph.pincode_graph:
+                            graph.pincode_graph[i] = set()
+                        graph.pincode_graph[i].add( merchant_id )
+        
+        return {"message" : "Graph Created Successfully"}
                     
     except Exception as e:
+        return {"Message" : "Unable to Create Graph" , 
+                "Error" : e }
         raise CustomException ( e , sys ) 
 
 @app.get("/create_graph")

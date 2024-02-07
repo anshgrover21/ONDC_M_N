@@ -12,10 +12,9 @@ class Graph  :
     def __init__(self):
         self.merchant_graph: Dict[int, Set[int]] = {}
         self.pincode_graph: Dict[int, Set[int]] = {}
-        for i in range ( 0 , 10000000) : 
+        for i in range ( 0 , 1) : 
             self.merchant_graph[i] = set()
-            if ( i < 30000):
-                self.pincode_graph[i] = set()
+            self.pincode_graph[i] = set()
     
     def find_merchants(self ,pincode : int ) -> Set[int]:
         return self.pincode_graph.get(pincode)
