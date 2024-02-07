@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "calm-bliss-413606",
+  "private_key_id": "debad2afa679e93cec9dfd8f8d31a12f9748138f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDnx9KAAGdMCh//\nn0zAYak07146PkRnAKLq8v6eCE2JKVOFG+A4PvvrTZOr8DwTKiu6GkZJCk7oqAeU\n/laq/j79zYvvaMZm7areV2k5VClJTN7SzmwrI8iVg/VqdenvwCXnfFwFUhnHw+GI\nDE6QUf3rpfLFpSi1Lq5HLbwloZtnq5owdtFKlHBqQ+TSKmnfMFOJNaRIV/oBRpT4\nB56H5Y6NorXD7xSID6ePPVEVcBu0qbjpAnF7KG5ZtMsSdc+6gWWVmejsoiPZijDQ\nNFZNxRdDf6bu6aqrce2cd+2g6hqdJKVZEZBPDpzFjU+yChkl3KXSGjrtm7NtiydE\nbqHDIvgJAgMBAAECggEADREmJCrBqBcLCkeCFXd8CVy0WH7Brvfpd2r3IVQxANpY\nV9EEQU+FttSTDna3AFKYj/+itkPzQmkUsljrbGz0gq0HplnnE47zGuFdMIr23+fK\nSSKzlPQJvyonGBcpNufDi0smyfMAupMnwBqHhFnnAZXDu9JNmvdUgnVI3etAPmYi\nDjSR6TQbPMlrVgaumVR+4LDMIp8BC2L7DUF3dRBgYq20rXKDOYq4+7dHM+EHku13\nQorQEOvrG87tTneJjP1/IO23klmYR5R8ZKK31hcng85pRcdJ8/NY/ZL6t1LczbC5\nvd6bz0mdh/oXrD+nJuTcbe6HP6AlVBu+H8QmPEjYfQKBgQDzp8h9m90a+NouHhNT\n7MhUI+0sgcW09DC2bdf2iA3ymTZclBRIke0SRhew/7OQYdLmJYrHQUhEqhu8pe7C\nQI3cQUZAJtlAEvtq/QSdx5fgwUxYhYL82VRxvdIZWZuFPdULvK7RO4dnyMJWWn2Z\nqIwnhQwwUSR3GnNcjLwLMmxDpQKBgQDzhgWjbkcOtTecPUumIiOG9gek56ERhq7p\njrS1SHv/TyqNdCiy10nZn/Izy4N0YASyKchgm/QC+SB0F+dX/kClK7wpgQ6rrN5I\nMsLEpTfS7YgpI6RCcXSiYbUI98+6ASFAXKs+S5qwd/6rXrKPoVfQwApW4tWknorG\nk7fsVJnllQKBgBj/qe5ZQ4I07g21QD5oGNWpKfhbCDHcq/LLqlC8/NFbLtyoxLv9\nXNl3H48lbQLvRngeefKfnA6PdXERhUGg5e0nNVH3qmqMiAceFo8pn0eMDY03hYzz\nr1pMI3Y+X1p4UZd2sGj/NpFLY8UAW8qcJGUZnXqHmLovmI5yUgjED5+RAoGBAOtd\nFCQB2IGZmjbSc0QNaMLvFTJHgL/8qR8pAvTXKqj2bc0rgI5hT4obca6nutSGXOOJ\nSJY/BJa/C6PI2pqMLRS2cXS3vGMmf+vNy7rdaFffpaMFRKPHHhA3WQ5i3I0MvIOF\nTSi3T7nRL/2XWAND0Cj9AsE5GX2ykbQdXzz2A4wFAoGBAMlypl0/gZHAw6RE/FOe\nq6JInOZHuNFH2v6nzvDbM+CpV8YaW5nFXpggpqMImhm2wc4MIOT9Lpf7VskqKOBr\nOOXhM1HkNj4p4DcgMZtaHIIcxkcyVo/l8veLhFdONaVNauUI7RFBxnLDoSIRUahs\nTKDkLxtGq/Y8dg911htGhSwY\n-----END PRIVATE KEY-----\n",
+  "client_email": "bucketstorage@calm-bliss-413606.iam.gserviceaccount.com",
+  "client_id": "101779021369932844952",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bucketstorage%40calm-bliss-413606.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

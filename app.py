@@ -9,7 +9,7 @@ import dill
 app = FastAPI()
 
 def load_graph():
-    with open("data/data.pkl","rb") as file_obj : 
+    with open("artifacts/data.pkl","rb") as file_obj : 
         return dill.load(file_obj) 
 
 graph = load_graph() 
@@ -56,12 +56,13 @@ def read_csv(file: UploadFile = File(...), chunk_size: int = 1000):
         csv_stream = file.file
 
         # Iterate through chunks
-        for chunk in pd.read_csv(csv_stream, iterator=True,header=None , dtype = int, chunksize=chunk_size):
+        for chunk in pd.read_csv(csv_stream, iterator=True,header=None , chunksize=chunk_size):
 
             for _, row in chunk.iterrows():
 
                 graph.merchant_graph[int(row[0])].update(row[1:].values)
                 for i in row[1:].values:
+                    # if 
                     graph.pincode_graph[i].add( row[0] )
     except Exception as e:
         print(e)
