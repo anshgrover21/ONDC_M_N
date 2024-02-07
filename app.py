@@ -6,14 +6,25 @@ from typing import List,Dict , Set
 import sys 
 import pickle 
 import dill 
+from google_cloud import google_cloud_bucket as gcb
+from google.cloud import storage
+from logger import logging 
+from exception import CustomException 
+import io 
+# from memory_profiler import profile
+
+
+
+
 app = FastAPI()
 
-def load_graph():
-    with open("artifacts/data.pkl","rb") as file_obj : 
-        return dill.load(file_obj) 
+# def load_graph():
+#     with open("artifacts/data.pkl","rb") as file_obj : 
+#         return dill.load(file_obj) 
 
-graph = load_graph() 
+# graph = load_graph() 
 
+graph = Graph() 
 
 def get_graph() : 
     return graph
@@ -26,53 +37,67 @@ def root(graph : Graph = Depends(get_graph)):
     for j in graph.pincode_graph:
         if  (len(graph.pincode_graph[j])) : print ( j , graph.pincode_graph[j] ) 
 
-@app.get("/search/{merchant_id}")
-async def get_pincodes(merchant_id : int, graph : Graph = Depends(get_graph) ):
+@app.get("/search/")
+async def get_pincodes(merchant_id : int, pincode : int , graph : Graph = Depends(get_graph) ):
     try : 
-        # print ( graph.find_pincode(merchant_id))
-        return {"pincodes" : graph.find_pincode(merchant_id) }
+        if ( merchant_id is not None ):
+            return {"pincodes" : graph.find_pincode(merchant_id) }
+        if (pincode is not None ):
+            return {"merchants" : graph.find_merchants(pincode)}
     except Exception as e : 
-        print ( e ) 
+        raise CustomException( e , sys ) 
 
 
 
-@app.get( "/search/{pincode}")
-async def get_merchants(pincode : int , graph : Graph = Depends(get_graph) ):
-    try : 
-        print ( graph.find_merchants(pincode) )
-        return {"merchants" : graph.find_merchants(pincode)}
-    except Exception as e : 
-        print ( e ) 
+# @app.get( "/search/")
+# async def get_merchants( , graph : Graph = Depends(get_graph) ):
+#     try : 
+#         print ( graph.find_merchants(pincode) )
+#         return {"merchants" : graph.find_merchants(pincode)}
+#     except Exception as e : 
+#         raise CustomException ( e , sys ) 
 
-
-def read_csv(file: UploadFile = File(...), chunk_size: int = 1000):
+# @profile
+async def create_graph(bucket_name : str , blob_name : str ):
     global graph 
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
     try:
-        # Initialize graph if not already created
-        if not graph:
-            graph = Graph()  # Assuming Graph is a class you have defined
+        blob_content = blob.download_as_string()
+         
+        blob_file = io.BytesIO(blob_content)
+        # print ( blob_file  )
 
-        # Use pandas to read the CSV file in chunks
-        csv_stream = file.file
 
-        # Iterate through chunks
-        for chunk in pd.read_csv(csv_stream, iterator=True,header=None , chunksize=chunk_size):
+        for chunk in pd.read_csv(blob_file, iterator=True,header=None , chunksize=100, names=[f"col_{i}" for i in range(30000)]):
 
             for _, row in chunk.iterrows():
-
-                graph.merchant_graph[int(row[0])].update(row[1:].values)
-                for i in row[1:].values:
-                    # if 
-                    graph.pincode_graph[i].add( row[0] )
+                for i in row[1:]:
+                    if ( pd.isna(i) ) :
+                        break 
+                    else :
+                        graph.merchant_graph[int(row[0])].add(int (i) ) 
+                        graph.pincode_graph[int(i)].add( int(row[0]) )
+                    
+                    
     except Exception as e:
-        print(e)
-    finally:
-        # Close the file stream
-        file.file.close()
+        raise CustomException ( e , sys ) 
 
-    return
+@app.get("/create_graph")
+async def revoke_create_graph():    
+    await create_graph("mxndatabucket" , "dataset_100000.csv")
+    
+
 
 @app.post("/upload-csv/")
 async def upload_csv(file: UploadFile = File(...) ):
-    read_csv(file) 
-    return "file read successfully"
+    try : 
+        file_contents = await file.read()  # Read the contents of the uploaded file as bytes
+        file_contents_str = file_contents.decode('utf-8')  # Convert bytes to string
+        # # print (file_contents_str)
+        # gcb.upload_blob(file.file, "data/" + file.filename)
+        gcb.upload_an_object( file.filename ,file_contents_str , file.content_type ) 
+        return "file read successfully"
+    except Exception as e : 
+        raise CustomException(e , sys ) 

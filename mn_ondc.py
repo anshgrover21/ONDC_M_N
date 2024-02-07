@@ -12,7 +12,7 @@ class Graph  :
     def __init__(self):
         self.merchant_graph: Dict[int, Set[int]] = {}
         self.pincode_graph: Dict[int, Set[int]] = {}
-        for i in range ( 0 , 1000000) : 
+        for i in range ( 0 , 10000000) : 
             self.merchant_graph[i] = set()
             if ( i < 30000):
                 self.pincode_graph[i] = set()
