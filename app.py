@@ -94,15 +94,16 @@ async def get_sampled_graph(filename : str ):
     try :
         global graph 
         logging.info(f"Create Graph is called on filename {filename} ")
-
         await create_graph("mxndatabucket" , filename)
-        save_path  = os.path.join("artifacts/","graph.pkl")
-        save_object(graph , save_path )
-        await gcb.upload_blob("artifacts/graph.pkl" , "sample/graph.pkl" )
-        delete_object("artifacts/graph.pkl")
+
+        await gcb.upload_blob(graph , "sample/graph.pkl" )
+        # delete_object("artifacts/graph.pkl")
 
 
-        logging.info("Sampled Graph Retreived")
+        return {
+            "message" : "Graph created successfully"
+        }
+    
     except Exception as e : 
         raise HTTPException(status_code=500, detail=str(e))
     
@@ -132,20 +133,16 @@ async def upload_csv(file: UploadFile = File(...) ):
 @app.get("/take_sample_graph")
 async def sample_graph () : 
     try : 
-        logging.info("Taking sample Graph from the Bucket ")
-        check = await gcb.download_blob("sample/graph.pkl" , "artifacts/graph.pkl")
+        global graph
+        # logging.info("Taking sample Graph from the Bucket ")
+    
 
-        if ( check ) : 
-            
-            global graph  
-            graph = load_object ("artifacts/graph.pkl")
-
-            delete_object("artifacts/graph.pkl")
-
+        graph = gcb.read_from_blob("sample/graph.pkl") 
+        if (graph) :
             return {"message" : "Sample Graph Loaded Successfully"}
         else :
             raise HTTPException (status_code= 403 , detail = "Unable to Download Sample Graph ")
-        logging.info("Sample Graph Retrieved Successfully")
+        # logging.info("Sample Graph Retrieved Successfully")
     except Exception as e : 
         raise HTTPException( status_code= 403 , detail= str ( e ) )
     
