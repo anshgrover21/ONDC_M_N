@@ -120,7 +120,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-calm-bliss-413606-debad2afa679.json
+gcp_config.json
 .env
 .venv
 env/

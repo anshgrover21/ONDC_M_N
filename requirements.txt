@@ -6,5 +6,3 @@ python-multipart
 dill
 pyarrow
 google-cloud-storage
-memory_profiler
-# -e .

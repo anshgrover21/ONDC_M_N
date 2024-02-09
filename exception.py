@@ -1,7 +1,5 @@
 import logging
 import sys 
-# import os 
-print(sys.path)
 from logger import logging 
 
 
