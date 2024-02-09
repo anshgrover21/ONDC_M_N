@@ -1,22 +1,12 @@
 from google.cloud import storage
 import os
-import dotenv
 
-dotenv.load_dotenv()
+
 
 # set key credentials file path
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'google_cloud/gcp_config.json'
 
-# def list_blob_from_bucket(bucket_name = os.environ["BUCKET_NAME"] ):
-#     """Lists all buckets."""
-
-#     storage_client = storage.Client()
-
-#     blobs = storage_client.list_blobs(bucket_name)
-#     return blobs
-
-# define function that uploads a file from the bucket
-async def upload_blob( source_file_name, destination_file_name , bucket_name = os.environ["BUCKET_NAME"] ): 
+async def upload_blob( source_file_name, destination_file_name , bucket_name = "mxndatabucket" ): 
     storage_client = storage.Client()
 
     bucket = storage_client.bucket(bucket_name)
@@ -26,14 +16,14 @@ async def upload_blob( source_file_name, destination_file_name , bucket_name = o
 
     return True
 
-def upload_an_object ( filename,file_content , content_type, bucket_name = os.environ["BUCKET_NAME"] ) :
+def upload_an_object ( filename,file_content , content_type, bucket_name =  "mxndatabucket") :
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(filename) 
     blob.upload_from_string(file_content, content_type=content_type)
     return {"message": "File uploaded successfully to GCS"}
 
-async def download_blob( file_name, destination_file_name , bucket_name = os.environ["BUCKET_NAME"]): 
+async def download_blob( file_name, destination_file_name , bucket_name = "mxndatabucket"): 
     storage_client = storage.Client()
 
     bucket = storage_client.bucket(bucket_name)
@@ -42,7 +32,7 @@ async def download_blob( file_name, destination_file_name , bucket_name = os.env
     blob.download_to_filename(destination_file_name)
 
     return True
-def delete_blob(blob_name , bucket_name = os.environ["BUCKET_NAME"]):
+def delete_blob(blob_name , bucket_name = "mxndatabucket"):
     """Deletes a blob from the bucket."""
 
     storage_client = storage.Client()
