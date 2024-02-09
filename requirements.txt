@@ -5,4 +5,5 @@ numpy
 python-multipart
 dill
 pyarrow
+gunicorn
 google-cloud-storage

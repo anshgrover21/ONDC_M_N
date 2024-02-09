@@ -25,12 +25,13 @@ def get_graph() :
 
 @app.get("/")
 def root(graph : Graph = Depends(get_graph)):
-    for i in graph.merchant_graph : 
-        # if (len(graph.merchant_graph[i])) : 
-        print ( i , graph.merchant_graph[i] )
-    for j in graph.pincode_graph:
-        # if  (len(graph.pincode_graph[j])) : 
-        print ( j , graph.pincode_graph[j] ) 
+    try : 
+        return {
+            "message" : "Back end is Active"
+        }
+    except Exception as e : 
+        raise HTTPException ( status_code= 403 , detail= str ( e ) )
+
 
 @app.get("/search/")
 async def search_operation(merchant_id: int = None, pincode: int = None, graph: Graph = Depends(get_graph)):
@@ -88,20 +89,10 @@ async def create_graph(bucket_name : str , blob_name : str ):
     except Exception as e:
         raise HTTPException (status_code= 500  , detail = str(e) )
         
-
-# @app.get("/sample_dataset")
-# async def list_dataset():
-#     logging.info("Fetching List of Blobs from GCP")
-#     try : 
-#         return {
-#             "datasets" : gcb.list_blob_from_bucket()
-#         }
-#     except Exception as e : 
-#         raise HTTPException ( status_code = 500  , detail = str(e))
-
 @app.post("/create_graph")
-async def get_sampled_graph(filename : str , graph : Graph = Depends(get_graph)): 
+async def get_sampled_graph(filename : str ): 
     try :
+        global graph 
         logging.info(f"Create Graph is called on filename {filename} ")
 
         await create_graph("mxndatabucket" , filename)
@@ -127,6 +118,10 @@ async def upload_csv(file: UploadFile = File(...) ):
         gcb.upload_an_object( file.filename ,file_contents_str , file.content_type )
 
         logging.info(f"File : {file.filename}Upload to GCP completed") 
+
+        logging.info("Graph Creation Called") 
+        await create_graph("mxndatabucket" , file.filename)
+        logging.info("Graph Created Successfully ")
         return {"message" : "File Read Successfully"}
     except Exception as e : 
         raise CustomException(e , sys ) 
@@ -146,6 +141,8 @@ async def sample_graph () :
             graph = load_object ("artifacts/graph.pkl")
 
             delete_object("artifacts/graph.pkl")
+
+            return {"message" : "Sample Graph Loaded Successfully"}
         else :
             raise HTTPException (status_code= 403 , detail = "Unable to Download Sample Graph ")
         logging.info("Sample Graph Retrieved Successfully")
